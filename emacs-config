@@ -16,13 +16,31 @@
 
 (global-display-line-numbers-mode 1)
 
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
+
+(when (not (package-installed-p 'use-package))
+    (package-refresh-contents)
+    (package-install 'use-package))
 
 ;; Company mode settings
-(global-company-mode)
-(setq company-idle-delay
-      (lambda() (if (company-in-string-or-comment) nil 0)))
-(setq company-text-face-extra-attributes
+
+(use-package company
+    :ensure t
+    :config
+    (global-company-mode t)
+    (setq company-idle-delay 0)
+    (setq company-text-face-extra-attributes
       '(:weight bold :slant italic))
+)
 
-
-
+;; ace-window
+(use-package ace-window
+    :ensure t
+    :config
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (global-set-key (kbd "M-o") 'ace-window)
+    (setq aw-dispatch-always t)
+)
