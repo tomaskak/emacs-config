@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# 
-# Args:
-#     -o output file (optional, default is ~/.emacs)
-#     -i input file (optional, default is ./emacs-config)
-
 DisplayHelp()
 {
    # Display Help
