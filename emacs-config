@@ -25,8 +25,10 @@
     (package-refresh-contents)
     (package-install 'use-package))
 
-;; Company mode settings
+(add-to-list 'package-archives
+             '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 
+;; Company mode settings
 (use-package company
     :ensure t
     :config
@@ -34,7 +36,28 @@
     (setq company-idle-delay 0)
     (setq company-text-face-extra-attributes
       '(:weight bold :slant italic))
+    :bind ("C-l" . company-complete)
 )
+
+;; Company Backends
+
+;; Jedi for python
+;; Issues when setting up:
+;; Jedi version has to be lowered: https://github.com/davidhalter/jedi/issues/1802
+;; sexpdata downgrade to 0.0.3: https://github.com/tkf/emacs-jedi/issues/368
+;; run jedi:install-server in a buffer with python open to initialize the jedi epc server
+(defun my/python-mode-hook ()
+  (add-to-list 'company-backends 'company-jedi))
+
+(use-package company-jedi
+ :ensure t
+ :config
+ (add-hook 'python-mode-hook 'my/python-mode-hook) 
+ (setq jedi:complete-on-dot t)
+ (setq jedi:server-args '("--log" "/Users/t.k./Home/tmp/jedi.log"))
+;; (setq jedi:server-command '("/Users/t.k./.emacs.d/.python-environments/default/bin/python" "/Users/t.k./.emacs.d/elpa/jedi-core-0.2.8/jediepcserver.py"))
+ )
+ 
 
 ;; ace-window
 (use-package ace-window
@@ -43,9 +66,7 @@
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     (global-set-key (kbd "M-o") 'ace-window)
     (setq aw-dispatch-always t)
-q)
-
-(setq next-screen-context-lines '20)
+)
 
 
 ;; avy - Visible word jump
@@ -60,3 +81,6 @@ q)
 (use-package magit
   :ensure t)
 
+;; python virtualenv support, 'pyvenv-activate' to set venv (Thought it was needed for jedi, but it is not)
+;; (use-package pyvenv
+;;   :ensure t)
